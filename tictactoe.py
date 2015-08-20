@@ -33,9 +33,6 @@ def X_won(board):
 def O_won(board):
     return winner(board) == 'O'
 
-def tied(board):
-    return complete(board) == True and winner(board) is None
-
 def winner(board):
     winning_combos = (
         [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -62,6 +59,13 @@ def complete(board):
 def determine(board, player):
     if get_bot_move(board, player):
         return get_bot_move(board, player)-1
+    if len(available_moves(board)) == 7 and len(get_squares(board, get_enemy(player))) == 1 and board[4] == player:
+        aaz = get_squares(board, get_enemy(player))
+        if 2 in aaz:
+            return 0
+        else:
+            return 2
+        
     a = 2 if player == "X" else -2
     choices = []
     if len(available_moves(board)) == 9:
@@ -117,6 +121,9 @@ def empty(board):
         if i != "_":
             return False
     return True
+
+def tied(board):
+    return complete(board) == True and winner(board) is None
 
 def win(board):
     for i in range(0,len(board)):
@@ -196,15 +203,19 @@ def next_move(player, first_player_bids, second_player_bids, board, move):
         else:
             print 2, num-6
     else:
+        if len(first_player_bids) == 2 and nboard[4] == get_enemy(move):
+            print 1 + tsp
+            return
         if len(first_player_bids) == 0 and player == "O":
             print 2
             return
         if win(nboard):
-            print min(player_num, rival_num+tsp)
+            print min(player_num, max(rival_num+tsp,1))
         elif player_num > 6:
             print max(rival_num +tsp, 1)
         else:
             print min(1,player_num)
+        
         
 #gets the id of the player
 player = raw_input()
